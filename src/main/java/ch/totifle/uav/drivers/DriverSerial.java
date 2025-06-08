@@ -2,6 +2,8 @@ package ch.totifle.uav.drivers;
 
 import com.fazecast.jSerialComm.*;
 
+import ch.totifle.uav.Uav;
+
 public class DriverSerial implements Runnable{
 
     private SerialPort port;
@@ -28,7 +30,7 @@ public class DriverSerial implements Runnable{
     @Override
     public void run() {
         byte[] buffer = new byte[30];
-        while(true){
+        while(Uav.running){
             buffer = new byte[30];
             
             byte[] commandBuffer = new byte[2];
@@ -51,14 +53,13 @@ public class DriverSerial implements Runnable{
             }
             channels = temp_channels;
             
-                /* 
-            for(int i = 0; i< channels.length; i++){
-                System.out.print(" ch" + i + ": " + (channels[i]));
-            }*/
+            Uav.pilot.setChannels(temp_channels);
 
 
             
         }
+
+        port.closePort();
     }
 
     private int[] readChannels(byte[] buffer){
@@ -75,8 +76,6 @@ public class DriverSerial implements Runnable{
 
             lsb = (Byte.toUnsignedInt(buffer[j*2]));
             msb = (Byte.toUnsignedInt(buffer[j*2+1]));
-
-//            System.out.println("msb/lsb " + Integer.toBinaryString(msb) + " " + Integer.toBinaryString(lsb));
             checksum +=  lsb + msb;
             int val = lsb+(msb<<8);
             

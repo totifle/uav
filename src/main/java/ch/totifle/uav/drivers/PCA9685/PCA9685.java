@@ -23,7 +23,6 @@ public class PCA9685 {
         pos /=5;
         int off = 4000-pos;
 
-        //System.out.println("new pos debug : " + (pos&(~0x0f)));
 
         byte[] buffer = new byte[4];
 
@@ -32,7 +31,8 @@ public class PCA9685 {
         buffer[2] = (byte)(off & 0xff);
         buffer[3] = (byte)((off>>8) & 0x0f);
 
-        writeToRegister(ServoRegisters.CH0_ON_TIME_LSB, buffer);
+        device.writeRegister(ServoRegisters.CH0_ON_TIME_LSB.getAddress() + channel*4, buffer);
+
     }
 
     private void writeMode1(MODE1 mode, boolean state){

@@ -1,0 +1,32 @@
+{
+    "channels":{
+        "roll":{
+            "channel":0,
+            "trim":0,
+            "low_endpoint": -45,
+            "high_endpoint": -45,
+            "type": "NG90"
+        },
+        "pitch":{
+            "channel":1,
+            "trim":0,
+            "low_endpoint": -45,
+            "high_endpoint": -45,
+            "type": "NG90"
+        },
+        "yaw":{
+            "channel":2,
+            "trim":0,
+            "low_endpoint": -45,
+            "high_endpoint": -45,
+            "type": "NG90"
+        },
+        "throtrle":{
+            "channel":3,
+            "trim":0,
+            "low_endpoint": -45,
+            "high_endpoint": -45,
+            "type": "NG90"
+        }
+    }
+}

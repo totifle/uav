@@ -1,26 +1,41 @@
 package ch.totifle.uav;
 
+import java.io.FileReader;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 
 import ch.totifle.uav.drivers.DriverI2C;
 import ch.totifle.uav.drivers.DriverSerial;
 import ch.totifle.uav.drivers.PCA9685.PCA9685;
-import ch.totifle.uav.drivers.lcd.LCD;
+import ch.totifle.uav.pilot.Pilot;
 import ch.totifle.uav.pilot.servos.NG90;
 import ch.totifle.uav.pilot.servos.Servo;
+
 
 public class Uav 
 {
 
+    public static JSONObject configs;
+
     public static Context pi4j;
     public static DriverI2C i2c;
+
     public static DriverSerial serial;
     public static Thread serialThread;
-    public static LCD lcd;
+
     public static PCA9685 servoHat;
 
-    public static Servo servo;
+    public static Pilot pilot;
+    public static Thread pilotThread;
+
+    public static boolean running = true;
+
+    public static Servo yaw, pitch, roll, throttle;
+
     public static void main( String[] args )
     {
         pi4j = Pi4J.newAutoContext();
@@ -29,16 +44,15 @@ public class Uav
 
         serial = new DriverSerial();
 
-        lcd = new LCD();
-
         servoHat = new PCA9685("servo", 0x40);
 
-        servo = new NG90();
+        pilot = new Pilot();
+        //servo = new NG90(45, -45, 45);
 
         try {
             init();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
+            System.out.println("something went horibly wrong");
             e.printStackTrace();
         }
 
@@ -46,58 +60,72 @@ public class Uav
 
     public static void init() throws Exception{
 
+        JSONParser parser = new JSONParser();
+
+        configs = (JSONObject) parser.parse(new FileReader("./config.json"));
+
+        roll = servoFromConfig("roll");
+        pitch = servoFromConfig("pitch");
+        yaw = servoFromConfig("yaw");
+        throttle = servoFromConfig("throttle");
+
         serial.init();
 
         
         serialThread = new Thread(serial);
         serialThread.start();
-        
-        lcd.init();
-
-
-       
-        lcd.setDisplay(false);
-        lcd.writeLine("hello, world", 0, 0);
-        lcd.setDisplay(true);
-        Thread.sleep(2000);
 
         servoHat.init();
 
-        while (true) {
-            //lcd.shiftDisplay(false);
+        pilot.init();
+
+        pilotThread = new Thread(pilot);
+        pilotThread.start();
+
+        while (running) {
             tick();
+            Thread.sleep(20);
         }
+    }
+
+    private static Servo servoFromConfig(String name) {
+        
+        JSONObject servoData = (JSONObject) ((JSONObject) configs.get("channels")).get(name);
+
+        
+        switch ((String) servoData.get("type")) {
+            case "NG90":
+            default:
+                int trim =  Long.valueOf((long)servoData.get("trim")).intValue();
+                int lowEP = Long.valueOf((long)servoData.get("low_endpoint")).intValue();
+                int hithEP = Long.valueOf((long)servoData.get("high_endpoint")).intValue();
+                int channel = Long.valueOf((long)servoData.get("channel")).intValue();
+                
+                System.out.printf("attach new servo at channel %d. Trim: %d | lep: %d | hep: %d\n", channel, trim, lowEP, hithEP);
+                return new NG90(trim, lowEP, hithEP, channel);
+        }
+
     }
 
     public static void tick(){
 
-        int deg = map(serial.getChannels()[0], 1000,2000, -45, 45);
-        servo.mapPosition(serial.getChannels()[0], 1000,2000);
-        System.out.println(deg);
-        System.out.println(serial.getChannels()[0] + " " + (serial.getChannels()[4]-1000) + "->" + (serial.getChannels()[0] - (serial.getChannels()[4]-1000)));
-        servoHat.sendPosition(servo.getAsPWM(), 0);
+        if(!pilot.isUsable()) return;        
 
-        try {
-            Thread.sleep(20);
-        } catch (InterruptedException e) {
-        }
+        System.out.println("new roll: "  + roll.getPosition() + " from ch val: " + serial.getChannels()[0]);
+
+        servoHat.sendPosition(roll.getAsPWM(), roll.getChannel());
+        servoHat.sendPosition(pitch.getAsPWM(), pitch.getChannel());
+        servoHat.sendPosition(yaw.getAsPWM(), yaw.getChannel());
+        servoHat.sendPosition(throttle.getAsPWM(), throttle.getChannel());        
+        
     }
 
-    public static void lcd_tick(){
-        lcd.clear();
-        lcd.home();
-        lcd.writeLine("thr: " + serial.getChannels()[2], 0, 0);
-        try {
-            Thread.sleep(21);
-        } catch (InterruptedException e) {
-        }
-    }
 
-    public static int map(int val, int lower, int upper, int min, int max){
+    public static float map(float val, float lower, float upper, float min, float max){
         float range_in = upper-lower;
         float range_out = max-min;
 
-        return Math.round((((val-lower)/range_in)*range_out)+min);
+        return ((((val-lower)/range_in)*range_out)+min);
     }
 
 
