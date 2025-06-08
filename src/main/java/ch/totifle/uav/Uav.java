@@ -111,8 +111,6 @@ public class Uav
 
         if(!pilot.isUsable()) return;        
 
-        System.out.println("new roll: "  + roll.getPosition() + " from ch val: " + serial.getChannels()[0]);
-
         servoHat.sendPosition(roll.getAsPWM(), roll.getChannel());
         servoHat.sendPosition(pitch.getAsPWM(), pitch.getChannel());
         servoHat.sendPosition(yaw.getAsPWM(), yaw.getChannel());

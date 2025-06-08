@@ -8,6 +8,7 @@ public class DriverSerial implements Runnable{
 
     private SerialPort port;
     private int[] channels;
+    private long lastRead;
 
     public DriverSerial(){
 
@@ -51,9 +52,21 @@ public class DriverSerial implements Runnable{
                 System.out.println("No data from channels");
                 continue;
             }
+
+            boolean isSame = true;
+            for(int i = 0; i<temp_channels.length; i++){
+                if(temp_channels[i] != channels[i]){
+                    isSame = false;
+                }
+            }
+
+            if(isSame){
+                continue;
+            }
+            
             channels = temp_channels;
             
-            Uav.pilot.setChannels(temp_channels);
+            lastRead = System.currentTimeMillis();
 
 
             
@@ -88,7 +101,11 @@ public class DriverSerial implements Runnable{
         return checksum == 0xffff ? ch : null;
     }
 
-    public int[] getChannels(){
+    public synchronized int[] getChannels(){
         return channels;
+    }
+
+    public synchronized long getLastRead(){
+        return lastRead;
     }
 }

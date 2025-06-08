@@ -10,7 +10,7 @@ public class Pilot implements Runnable {
     private PlaneOrientation orientation;
     private float roll, pitch, yaw, throttle;
     private boolean usable = false;
-    private int[] channels;
+    //private int[] channels;
 
     public Pilot(){
 
@@ -46,10 +46,14 @@ public class Pilot implements Runnable {
 
     public void fetchDataFromSerial(){
 
-        this.roll = Uav.map(this.channels[0], 1000, 2000, -1, 1);
-        this.pitch = Uav.map(this.channels[1], 1000, 2000, -1, 1);
-        this.yaw = Uav.map(this.channels[2], 1000, 2000, -1, 1);
-        this.throttle = Uav.map(this.channels[3], 1000, 2000, 0, 1);
+        System.out.println(System.currentTimeMillis() - Uav.serial.getLastRead());
+
+        int[] channels = Uav.serial.getChannels();
+
+        this.roll = Uav.map(channels[0], 1000, 2000, -1, 1);
+        this.pitch = Uav.map(channels[1], 1000, 2000, -1, 1);
+        this.yaw = Uav.map(channels[3], 1000, 2000, -1, 1);
+        this.throttle = Uav.map(channels[2], 1000, 2000, 0, 1);
 
         Uav.roll.mapPosition(this.roll, -1, 1);
         Uav.pitch.mapPosition(this.pitch, -1, 1);
@@ -91,9 +95,7 @@ public class Pilot implements Runnable {
         return usable;
     }
 
-    public void setChannels(int[] ch){
-        this.channels = ch;
-    }
+    
 
     
 }
