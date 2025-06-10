@@ -16,7 +16,7 @@ public class Coordinate {
     private static final CoordinateReferenceSystem LV95 = crsFactory.createFromName("epsg:2056");
 
     private static final CoordinateTransform wgsToLV = ctFactory.createTransform(WGS84, LV95);
-    private static final CoordinateTransform lvToWGS = ctFactory.createTransform(LV95, WGS84);
+    //private static final CoordinateTransform lvToWGS = ctFactory.createTransform(LV95, WGS84);
 
     public Coordinate(double e, double n, double z){
         x = e;

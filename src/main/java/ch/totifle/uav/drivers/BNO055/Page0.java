@@ -1,0 +1,94 @@
+package ch.totifle.uav.drivers.BNO055;
+
+public final class Page0 {
+
+    public static final byte CHIP_ID = (byte)(0x0);
+    public static final byte ACC_ID = (byte)(0x1);
+    public static final byte MAG_ID = (byte)(0x2);
+    public static final byte GYR_ID = (byte)(0x3);
+    //Ommiting software/bootloader version. I won't be using it.
+    //more info https://cdn-shop.adafruit.com/datasheets/BST_BNO055_DS000_1.pdf
+    public static final byte PAGE_ID = (byte)(0x7);
+    public static final byte ACC_DATA_X_LSB = (byte)(0x8);
+    public static final byte ACC_DATA_X_MSB = (byte)(0x9);
+    public static final byte ACC_DATA_Y_LSB = (byte)(0xA);
+    public static final byte ACC_DATA_Y_MSB = (byte)(0xB);
+    public static final byte ACC_DATA_Z_LSB = (byte)(0xC);
+    public static final byte ACC_DATA_Z_MSB = (byte)(0xD);
+    public static final byte MAG_DATA_X_LSB = (byte)(0xE);
+    public static final byte MAG_DATA_X_MSB = (byte)(0xF);
+    public static final byte MAG_DATA_Y_LSB = (byte)(0x10);
+    public static final byte MAG_DATA_Y_MSB = (byte)(0x11);
+    public static final byte MAG_DATA_Z_LSB = (byte)(0x12);
+    public static final byte MAG_DATA_Z_MSB = (byte)(0x13);
+    public static final byte GYR_DATA_X_LSB = (byte)(0x14);
+    public static final byte GYR_DATA_X_MSB = (byte)(0x15);
+    public static final byte GYR_DATA_Y_LSB = (byte)(0x16);
+    public static final byte GYR_DATA_Y_MSB = (byte)(0x17);
+    public static final byte GYR_DATA_Z_LSB = (byte)(0x18);
+    public static final byte GYR_DATA_Z_MSB = (byte)(0x19);
+    public static final byte EUL_HEADING_LSB = (byte)(0x1A);
+    public static final byte EUL_HEADING_MSB = (byte)(0x1B);
+    public static final byte EUL_ROLL_LSB = (byte)(0x1C);
+    public static final byte EUL_ROLL_MSB = (byte)(0x1D);
+    public static final byte EUL_PITCH_LSB = (byte)(0x1E);
+    public static final byte EUL_PITCH_MSB = (byte)(0x1F);
+    //Quanternion data. I learned the math
+    public static final byte QUA_DATA_W_LSB = (byte)(0x20);
+    public static final byte QUA_DATA_W_MSB = (byte)(0x21);
+    public static final byte QUA_DATA_X_LSB = (byte)(0x22);
+    public static final byte QUA_DATA_X_MSB = (byte)(0x23);
+    public static final byte QUA_DATA_Y_LSB = (byte)(0x24);
+    public static final byte QUA_DATA_Y_MSB = (byte)(0x25);
+    public static final byte QUA_DATA_Z_LSB = (byte)(0x26);
+    public static final byte QUA_DATA_Z_MSB = (byte)(0x27);
+    public static final byte LIA_DATA_X_LSB = (byte)(0x28);
+    public static final byte LIA_DATA_X_MSB = (byte)(0x29);
+    public static final byte LIA_DATA_Y_LSB = (byte)(0x2A);
+    public static final byte LIA_DATA_Y_MSB = (byte)(0x2B);
+    public static final byte LIA_DATA_Z_LSB = (byte)(0x2C);
+    public static final byte LIA_DATA_Z_MSB = (byte)(0x2D);
+    public static final byte GRV_DATA_X_LSB = (byte)(0x2E);
+    public static final byte GRV_DATA_X_MSB = (byte)(0x2F);
+    public static final byte GRV_DATA_Y_LSB = (byte)(0x30);
+    public static final byte GRV_DATA_Y_MSB = (byte)(0x31);
+    public static final byte GRV_DATA_Z_LSB = (byte)(0x32);
+    public static final byte GRV_DATA_Z_MSB = (byte)(0x33);
+    public static final byte TEMP = (byte)(0x34);
+    public static final byte CALIB_STAT = (byte)(0x35);
+    public static final byte ST_RESULT = (byte)(0x36);
+    public static final byte INT_STA = (byte)(0x37);
+    public static final byte SYS_CLK_STA = (byte)(0x38);
+    public static final byte SYS_STAT = (byte)(0x39);
+    public static final byte SYS_ERROR = (byte)(0x3A);
+    public static final byte UNIT_SELECT = (byte)(0x3B);
+    public static final byte OP_MODE = (byte)(0x3D);
+    public static final byte PWR_MODE = (byte)(0x3E);
+    public static final byte SYS_TRIGGER = (byte)(0x3F);
+    public static final byte TEMP_SOURCE = (byte)(0x40);
+    public static final byte AXIS_MAP_CONFIG = (byte)(0x41);
+    public static final byte AXIS_MAP_SIGN = (byte)(0x42);
+    public static final byte ACC_OFFSET_X_LSB = (byte)(0x55);
+    public static final byte ACC_OFFSET_X_MSB = (byte)(0x56);
+    public static final byte ACC_OFFSET_Y_LSB = (byte)(0x57);
+    public static final byte ACC_OFFSET_Y_MSB = (byte)(0x58);
+    public static final byte ACC_OFFSET_Z_LSB = (byte)(0x59);
+    public static final byte ACC_OFFSET_Z_MSB = (byte)(0x5A);
+    public static final byte MAG_OFFSET_X_LSB = (byte)(0x5B);
+    public static final byte MAG_OFFSET_X_MSB = (byte)(0x5C);
+    public static final byte MAG_OFFSET_Y_LSB = (byte)(0x5D);
+    public static final byte MAG_OFFSET_Y_MSB = (byte)(0x5E);
+    public static final byte MAG_OFFSET_Z_LSB = (byte)(0x5F);
+    public static final byte MAG_OFFSET_Z_MSB = (byte)(0x60);
+    public static final byte GYR_OFFSET_X_LSB = (byte)(0x61);
+    public static final byte GYR_OFFSET_X_MSB = (byte)(0x62);
+    public static final byte GYR_OFFSET_Y_LSB = (byte)(0x63);
+    public static final byte GYR_OFFSET_Y_MSB = (byte)(0x64);
+    public static final byte GYR_OFFSET_Z_LSB = (byte)(0x65);
+    public static final byte GYR_OFFSET_Z_MSB = (byte)(0x66);
+    public static final byte ACC_RADIUS_LSB = (byte)(0x67);
+    public static final byte ACC_RADIUS_MSB = (byte)(0x68);
+    public static final byte MAG_RADIUS_LSB = (byte)(0x69);
+    public static final byte MAG_RADIUS_MSB = (byte)(0x6A);
+        
+}

@@ -2,11 +2,11 @@ package ch.totifle.uav.drivers.PCA9685;
 
 import com.pi4j.io.i2c.I2C;
 
+import ch.totifle.uav.Logger;
 import ch.totifle.uav.Uav;
 
 public class PCA9685 {
 
-    private final int ADDR;
     private I2C device;
 
     private byte currentMode1, currentMode2;
@@ -14,7 +14,6 @@ public class PCA9685 {
     private static final byte PRESCALE = 121;
 
     public PCA9685(String id, int addr){
-        this.ADDR = addr;
 
         device = Uav.i2c.newDevice(id, addr);
     }
@@ -38,11 +37,8 @@ public class PCA9685 {
     private void writeMode1(MODE1 mode, boolean state){
         if(state){
             currentMode1 |= mode.getBit();
-            System.out.println("new mode 1 : " + Byte.toString(currentMode1));
         }else{
             currentMode1 &= ~mode.getBit();
-            
-            System.out.println("new mode 1 : " + Byte.toString(currentMode1));
         }
         writeToRegister(ServoRegisters.MODE1, currentMode1);
     }
@@ -50,26 +46,21 @@ public class PCA9685 {
     private void writeMode2(MODE2 mode, boolean state){
         if(state){
             currentMode2 |= mode.getBit();
-            System.out.println("new mode 2 : " + Byte.toString(currentMode2));
         }else{
             currentMode2 &= ~mode.getBit();
-            
-            System.out.println("new mode 2 : " + Byte.toString(currentMode2));
         }
         writeToRegister(ServoRegisters.MODE2, currentMode1);
     }
 
     public void reset(){
         int mode1 = device.readRegister(ServoRegisters.MODE1.getAddress());
-        System.out.println("Resetting. Mode 1 : " + Integer.toBinaryString(mode1));
+        Logger.log("Resetting. Mode 1 : " + Integer.toBinaryString(mode1), Logger.Type.INFO);
 
         if((mode1 & MODE1.SLEEP.getBit()) != 0){
             writeMode1(MODE1.SLEEP, false);
             try {
                 Thread.sleep(600);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             } 
         }
         writeMode1(MODE1.RESTART, true);
@@ -77,7 +68,7 @@ public class PCA9685 {
     
     
     public void init() throws InterruptedException{
-        currentMode1 = (byte)(MODE1.AI.getBit()|MODE1.SUB1.getBit()|MODE1.SUB2.getBit()|MODE1.SUB3.getBit()|MODE1.ALLCALL.getBit());
+        currentMode1 = (byte)(MODE1.AI.getBit());
         currentMode2 = (byte)(MODE2.OUTDRV.getBit()|MODE2.INVRT.getBit());
 
         writeToRegister(ServoRegisters.MODE1, currentMode1);
@@ -97,13 +88,6 @@ public class PCA9685 {
         reset();
 
         Thread.sleep(1);
-
-        System.out.println(Integer.toBinaryString((device.readRegister(ServoRegisters.PRESCALE.getAddress()))));
-        System.out.println(Integer.toBinaryString((device.readRegister(ServoRegisters.MODE1.getAddress()))));
-        System.out.println(Integer.toBinaryString((device.readRegister(ServoRegisters.MODE2.getAddress()))));
-
-        
-        System.out.println();
     }
 
     
@@ -119,6 +103,11 @@ public class PCA9685 {
     
     public void writeToRegister(ServoRegisters register, byte[] data) {
         device.writeRegister(register.getAddress(), data);
+    }
+
+    public void stop() {
+        device.close();
+        Logger.log("PCA9685 stopped", Logger.Type.INFO);
     }
     
 }

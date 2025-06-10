@@ -3,6 +3,7 @@ package ch.totifle.uav.drivers.lcd;
 import com.pi4j.io.i2c.I2C;
 import com.pi4j.io.i2c.I2CConfig;
 
+import ch.totifle.uav.Logger;
 import ch.totifle.uav.Uav;
 
 public class LCD {
@@ -78,7 +79,7 @@ public class LCD {
         try{
             device = Uav.i2c.getProvider().create(i2cConfig);
         }catch (Exception e){
-            System.out.println("error in lcd while creating device");
+            Logger.log("Error while creating LCD", Logger.Type.WARNING);
         }
 
     }

@@ -4,6 +4,7 @@ import com.pi4j.io.i2c.I2C;
 import com.pi4j.io.i2c.I2CConfig;
 import com.pi4j.io.i2c.I2CProvider;
 
+import ch.totifle.uav.Logger;
 import ch.totifle.uav.Uav;
 
 //0x28 : gyro
@@ -18,6 +19,7 @@ public class DriverI2C {
 
         i2cProvider = Uav.pi4j.provider("linuxfs-i2c");
         
+        
     }
 
     public I2CConfig createConfig(String id, int addr){
@@ -30,6 +32,12 @@ public class DriverI2C {
 
     public I2C newDevice(String id, int addr){
         return this.i2cProvider.create(createConfig(id, addr));
+    }
+
+    public void stop(){
+        Uav.pi4j.shutdown();
+        
+        Logger.log("I2C driver stopped", Logger.Type.INFO);
     }
 
     

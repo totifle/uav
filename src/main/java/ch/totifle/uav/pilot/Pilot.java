@@ -1,6 +1,7 @@
 package ch.totifle.uav.pilot;
 
 import ch.totifle.uav.Coordinate;
+import ch.totifle.uav.Logger;
 import ch.totifle.uav.Uav;
 
 public class Pilot implements Runnable {
@@ -39,14 +40,10 @@ public class Pilot implements Runnable {
         try {
             Thread.sleep(5);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     } 
 
     public void fetchDataFromSerial(){
-
-        System.out.println(System.currentTimeMillis() - Uav.serial.getLastRead());
 
         int[] channels = Uav.serial.getChannels();
 
@@ -93,6 +90,10 @@ public class Pilot implements Runnable {
 
     public boolean isUsable(){
         return usable;
+    }
+
+    public void stop() {
+        Logger.log("Pilot stopped", Logger.Type.INFO);
     }
 
     

@@ -2,6 +2,7 @@ package ch.totifle.uav.drivers;
 
 import com.fazecast.jSerialComm.*;
 
+import ch.totifle.uav.Logger;
 import ch.totifle.uav.Uav;
 
 public class DriverSerial implements Runnable{
@@ -20,7 +21,11 @@ public class DriverSerial implements Runnable{
 
         port = SerialPort.getCommPort("/dev/ttyS0");
 
-        System.out.println("port open successfully: " + port.openPort());
+        if(port.openPort()){
+            Logger.log("Successfully opened serial port", Logger.Type.INFO);
+        }else{
+            Logger.log("Could not open serial port", Logger.Type.WARNING);
+        }
         
         port.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
 
@@ -49,7 +54,7 @@ public class DriverSerial implements Runnable{
 
             int[] temp_channels = readChannels(buffer);
             if(temp_channels == null){
-                System.out.println("No data from channels");
+                Logger.log("Error while reading reciever data", Logger.Type.INFO);
                 continue;
             }
 
@@ -107,5 +112,11 @@ public class DriverSerial implements Runnable{
 
     public synchronized long getLastRead(){
         return lastRead;
+    }
+
+    public void stop() {
+        port.closePort();
+        
+        Logger.log("serial driver stopped", Logger.Type.INFO);
     }
 }
